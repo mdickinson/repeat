@@ -10,6 +10,8 @@ def repeat(cmd, count=None):
 
     If count is None (the default), run indefinitely.
 
+    Halts as soon as cmd exits abnormally.
+
     """
     if count is None:
         run_indices = itertools.count()
@@ -22,15 +24,24 @@ def repeat(cmd, count=None):
         print "Run {} completed.".format(index)
 
 
+def nonnegative_int(string):
+    value = int(string)
+    if value < 0:
+        raise argparse.ArgumentTypeError(
+            "{} is negative".format(value)
+        )
+    return value
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Repeat a command forever or a fixed number of times.",
     )
     parser.add_argument(
         "-n", "--count",
-        type=int,
+        type=nonnegative_int,
         default=None,
-        help="Run for a fixed number of iterations",
+        help="Run for COUNT iterations",
     )
     parser.add_argument(
         "cmd",
