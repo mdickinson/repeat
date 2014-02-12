@@ -47,3 +47,4 @@ Or even more simply, omit the count to repeat indefinitely::
     Starting run 7.
     4
     Run 7 completed.
+    <and so on>
