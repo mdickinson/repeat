@@ -22,6 +22,7 @@ Example usage::
 
 Or even more simply, omit the count to repeat indefinitely::
 
+    PS C:\Users\mdickinson\Desktop> repeat -n 3 python -c "print 2+2"
     Starting run 0.
     4
     Run 0 completed.
