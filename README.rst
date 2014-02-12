@@ -22,7 +22,7 @@ Example usage::
 
 Or even more simply, omit the count to repeat indefinitely::
 
-    PS C:\Users\mdickinson\Desktop> repeat -n 3 python -c "print 2+2"
+    PS C:\Users\mdickinson\Desktop> repeat python -c "print 2+2"
     Starting run 0.
     4
     Run 0 completed.
@@ -48,3 +48,24 @@ Or even more simply, omit the count to repeat indefinitely::
     4
     Run 7 completed.
     <and so on>
+
+Usage instructions::
+
+    PS C:\Users\mdickinson\Desktop> repeat --help
+    usage: repeat-script.py [-h] [-n COUNT] ...
+
+    Repeat a command forever or a fixed number of times.
+
+    positional arguments:
+      cmd                   Command to execute
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -n COUNT, --count COUNT
+                            Run for COUNT iterations
+
+Installation
+------------
+
+Clone this repository, enter the top-level directory, and do a "python
+setup.py install" (or "python setup.py develop" if you prefer).
