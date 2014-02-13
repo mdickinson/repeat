@@ -58,7 +58,9 @@ Or even more simply, omit the count to repeat indefinitely::
 Usage
 -----
 
-    PS C:\Users\factory\Desktop> repeat --help
+Type ``repeat --help`` to see options::
+
+    PS C:\Users\mdickinson\Desktop> repeat --help
     usage: repeat-script.py [-h] [-n COUNT] [-q] ...
 
     Repeat a command forever or a fixed number of times.
