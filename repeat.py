@@ -1,7 +1,6 @@
 import argparse
 import itertools
 import subprocess
-import sys
 
 
 def repeat(cmd, count=None, verbose=True):
