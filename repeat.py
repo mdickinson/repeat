@@ -37,6 +37,9 @@ def nonnegative_int(string):
 def main():
     parser = argparse.ArgumentParser(
         description="Repeat a command forever or a fixed number of times.",
+        # Necessary to override the name on Windows, else we'll see
+        # repeat-script.py here.
+        prog="repeat",
     )
     parser.add_argument(
         "-n", "--count",

@@ -61,7 +61,7 @@ Usage
 Type ``repeat --help`` to see options::
 
     PS C:\Users\mdickinson\Desktop> repeat --help
-    usage: repeat-script.py [-h] [-n COUNT] [-q] ...
+    usage: repeat [-h] [-n COUNT] [-q] ...
 
     Repeat a command forever or a fixed number of times.
 
