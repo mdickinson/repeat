@@ -1,3 +1,6 @@
+The repeat command
+------------------
+
 'repeat' is a dirt simple Python script to repeat a command
 indefinitely, or for a fixed number of iterations.  I wrote
 it because I got bored of writing::
@@ -5,7 +8,9 @@ it because I got bored of writing::
     for ($i = 0; $i -lt 100; $i++) do { stuff; }
 
 repeatedly in PowerShell, while trying to provoke threading-related
-race conditions in test code.
+race conditions in test code.  It also lets me write the same line
+on different platforms, without having to remember whether I'm in
+bash, PowerShell, or a regular Windows CMD prompt.
 
 Example usage::
 
@@ -49,10 +54,12 @@ Or even more simply, omit the count to repeat indefinitely::
     Run 7 completed.
     <and so on>
 
-Usage instructions::
 
-    PS C:\Users\mdickinson\Desktop> repeat --help
-    usage: repeat-script.py [-h] [-n COUNT] ...
+Usage
+-----
+
+    PS C:\Users\factory\Desktop> repeat --help
+    usage: repeat-script.py [-h] [-n COUNT] [-q] ...
 
     Repeat a command forever or a fixed number of times.
 
@@ -63,6 +70,8 @@ Usage instructions::
       -h, --help            show this help message and exit
       -n COUNT, --count COUNT
                             Run for COUNT iterations
+      -q, --quiet           Suppress progress output.
+
 
 Installation
 ------------

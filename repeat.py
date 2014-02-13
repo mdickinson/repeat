@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 
-def repeat(cmd, count=None):
+def repeat(cmd, count=None, verbose=True):
     """
     Run the given command (via subprocess) 'count' times.
 
@@ -19,9 +19,11 @@ def repeat(cmd, count=None):
         run_indices = xrange(count)
 
     for index in run_indices:
-        print "Starting run {}.".format(index)
+        if verbose:
+            print "Starting run {}.".format(index)
         subprocess.check_call(cmd)
-        print "Run {} completed.".format(index)
+        if verbose:
+            print "Run {} completed.".format(index)
 
 
 def nonnegative_int(string):
@@ -44,9 +46,16 @@ def main():
         help="Run for COUNT iterations",
     )
     parser.add_argument(
+        "-q", "--quiet",
+        action='store_true',
+        default=False,
+        help="Suppress progress output.",
+    )
+    parser.add_argument(
         "cmd",
         nargs=argparse.REMAINDER,
         help="Command to execute",
     )
+
     args = parser.parse_args()
-    repeat(args.cmd, count=args.count)
+    repeat(args.cmd, count=args.count, verbose=not args.quiet)
