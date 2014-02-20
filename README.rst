@@ -25,7 +25,11 @@ Example usage::
     4
     Run 2 completed.
 
-Or even more simply, omit the count to repeat indefinitely::
+The script will stop as soon as the command being executed exits with
+a nonzero return code.  Some day I may add an option to continue on
+error, but I haven't needed that option yet.
+
+More simply, omit the count argument to repeat indefinitely::
 
     PS C:\Users\mdickinson\Desktop> repeat python -c "print 2+2"
     Starting run 0.
