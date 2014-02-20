@@ -45,18 +45,18 @@ def main():
         "-n", "--count",
         type=nonnegative_int,
         default=None,
-        help="Run for COUNT iterations",
+        help="run for COUNT iterations",
     )
     parser.add_argument(
         "-q", "--quiet",
         action='store_true',
         default=False,
-        help="Suppress progress output.",
+        help="suppress progress output",
     )
     parser.add_argument(
         "cmd",
         nargs=argparse.REMAINDER,
-        help="Command to execute",
+        help="command to execute",
     )
 
     args = parser.parse_args()
