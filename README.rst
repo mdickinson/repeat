@@ -70,13 +70,13 @@ Type ``repeat --help`` to see options::
     Repeat a command forever or a fixed number of times.
 
     positional arguments:
-      cmd                   Command to execute
+      cmd                   command to execute
 
     optional arguments:
       -h, --help            show this help message and exit
       -n COUNT, --count COUNT
-                            Run for COUNT iterations
-      -q, --quiet           Suppress progress output.
+                            run for COUNT iterations
+      -q, --quiet           suppress progress output
 
 
 Installation
