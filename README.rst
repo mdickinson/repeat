@@ -68,7 +68,7 @@ Usage
 
 Type ``repeat --help`` to see options::
 
-    PS C:\Users\factory\Desktop> repeat --help
+    PS C:\Users\mdickinson\Desktop> repeat --help
     usage: repeat [-h] [-q] count ...
 
     Repeat a command forever or a fixed number of times.
