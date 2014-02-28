@@ -14,7 +14,7 @@ bash, PowerShell, or a regular Windows CMD prompt.
 
 Example usage::
 
-    PS C:\Users\mdickinson\Desktop> repeat -n 3 python -c "print 2+2"
+    PS C:\Users\mdickinson\Desktop> repeat 3 python -c "print 2+2"
     Starting run 0.
     4
     Run 0 completed.
@@ -58,6 +58,10 @@ More simply, omit the count argument to repeat indefinitely::
     Run 7 completed.
     <and so on>
 
+In the unlikely case that your command starts with an integer, you can
+disambiguate using a count of ``forever``: ``repeat forever python -c
+"print 2+2"``.
+
 
 Usage
 -----
@@ -65,18 +69,17 @@ Usage
 Type ``repeat --help`` to see options::
 
     PS C:\Users\mdickinson\Desktop> repeat --help
-    usage: repeat [-h] [-n COUNT] [-q] ...
+    usage: repeat [-h] [-q] count ...
 
     Repeat a command forever or a fixed number of times.
 
     positional arguments:
-      cmd                   command to execute
+      count        number of iterations, or 'forever'
+      cmd          command to execute
 
     optional arguments:
-      -h, --help            show this help message and exit
-      -n COUNT, --count COUNT
-                            run for COUNT iterations
-      -q, --quiet           suppress progress output
+      -h, --help   show this help message and exit
+      -q, --quiet  suppress progress output
 
 
 Installation

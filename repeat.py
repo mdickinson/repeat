@@ -25,13 +25,14 @@ def repeat(cmd, count=None, verbose=True):
             print "Run {} completed.".format(index)
 
 
-def nonnegative_int(string):
-    value = int(string)
-    if value < 0:
-        raise argparse.ArgumentTypeError(
-            "{} is negative".format(value)
-        )
-    return value
+def parse_count(string):
+    if string.lower() == 'forever':
+        return None
+    else:
+        value = int(string)
+        if value < 0:
+            raise ValueError("{} is negative".format(value))
+        return value
 
 
 def main():
@@ -42,10 +43,8 @@ def main():
         prog="repeat",
     )
     parser.add_argument(
-        "-n", "--count",
-        type=nonnegative_int,
-        default=None,
-        help="run for COUNT iterations",
+        "count",
+        help="number of iterations, or 'forever'",
     )
     parser.add_argument(
         "-q", "--quiet",
@@ -60,4 +59,13 @@ def main():
     )
 
     args = parser.parse_args()
-    repeat(args.cmd, count=args.count, verbose=not args.quiet)
+
+    # Backwards compatibility: if we can't parse 'count', treat
+    # it as the first part of the command.
+    try:
+        count = parse_count(args.count)
+    except ValueError:
+        count = None
+        args.cmd.insert(0, args.count)
+
+    repeat(args.cmd, count=count, verbose=not args.quiet)
