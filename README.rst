@@ -66,7 +66,7 @@ disambiguate using a count of ``forever``: ``repeat forever python -c
 Usage
 -----
 
-    Type ``repeat --help`` to see options::
+Type ``repeat --help`` to see options::
 
     PS C:\Users\factory\Desktop> repeat --help
     usage: repeat [-h] [-q] count ...
