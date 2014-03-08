@@ -41,23 +41,26 @@ def repeat(cmd, count=None, verbose=True, prefix="repeat: "):
             else:
                 run_description = "{index} of {count}".format(
                     index=index, count=count)
-
-        if verbose:
             print "{}Starting run {}.".format(prefix, run_description)
+
         try:
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as exc:
+            returncode = exc.returncode
             if verbose:
-                returncode = exc.returncode
                 print "{}Run {} failed with returncode {}.".format(
                     prefix, run_description, returncode)
-
-            if verbose:
-                print "{}Exiting.".format(prefix)
-            sys.exit(returncode)
+            break
         else:
             if verbose:
                 print "{}Run {} completed.".format(prefix, run_description)
+    else:
+        # All runs completed successfully.
+        returncode = 0
+
+    if verbose:
+        print "{}Exiting with returncode {}.".format(prefix, returncode)
+    return returncode
 
 
 def parse_count(string):
@@ -103,4 +106,5 @@ def main():
         count = None
         args.cmd.insert(0, args.count)
 
-    repeat(args.cmd, count=count, verbose=not args.quiet)
+    returncode = repeat(args.cmd, count=count, verbose=not args.quiet)
+    sys.exit(returncode)
