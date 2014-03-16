@@ -163,5 +163,5 @@ class TestRepeat(unittest.TestCase):
         ]
         self.assertEqual(actual_end_lines, expected_end_lines)
 
-        expected_failure_line = 'Run 3 failed with returncode -23.\n'
+        expected_failure_line = 'Run 3 failed with return code -23.\n'
         self.assertIn(expected_failure_line, output)
