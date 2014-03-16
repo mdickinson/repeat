@@ -33,7 +33,7 @@ Example usage::
     repeat: Starting run 3 of 3.
     4
     repeat: Run 3 of 3 completed.
-    repeat: Exiting with returncode 0.
+    repeat: Exiting with return code 0.
 
 The script will stop as soon as the command being executed exits with a nonzero
 return code, and will itself exit with that same return code.  On successful
@@ -71,7 +71,7 @@ happens to start with ``forever``, you'll *also* need to use ``forever``::
 
     $ repeat forever forever ....
 
-To silence the progress output, use the `-q` option::
+To silence the progress output, use the ``-q`` option::
 
     $ repeat -q 3 python -c "print 2+2"
     4
