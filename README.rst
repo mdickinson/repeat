@@ -5,7 +5,7 @@ The repeat command
 indefinitely, or for a fixed number of iterations.  I wrote
 it because I got bored of writing (for example)::
 
-    $ for ($i = 0; $i -lt 100; $i++) { echo "Run $i"; do_stuff; echo "Run $i complete" }
+    $ for ($i = 1; $i -le 100; $i++) { echo "Run $i"; do_stuff; echo "Run $i complete" }
 
 repeatedly in PowerShell, while trying to provoke threading-related race
 conditions in test code.  What I *wanted* to write instead was something like::
@@ -24,15 +24,15 @@ Example usage::
 
     $ repeat 3 python -c "print 2+2"
     repeat: Repeating ['python', '-c', 'print 2+2'] 3 times.
-    repeat: Starting run 0 of 3.
-    4
-    repeat: Run 0 of 3 completed.
     repeat: Starting run 1 of 3.
     4
     repeat: Run 1 of 3 completed.
     repeat: Starting run 2 of 3.
     4
     repeat: Run 2 of 3 completed.
+    repeat: Starting run 3 of 3.
+    4
+    repeat: Run 3 of 3 completed.
     repeat: Exiting with returncode 0.
 
 The script will stop as soon as the command being executed exits with a nonzero
@@ -44,9 +44,6 @@ More simply, omit the count argument to repeat indefinitely::
 
     $ repeat python -c "print 2+2"
     repeat: Repeating ['python', '-c', 'print 2+2'] forever.
-    repeat: Starting run 0.
-    4
-    repeat: Run 0 completed.
     repeat: Starting run 1.
     4
     repeat: Run 1 completed.
@@ -57,13 +54,16 @@ More simply, omit the count argument to repeat indefinitely::
     4
     repeat: Run 3 completed.
     repeat: Starting run 4.
+    4
+    repeat: Run 4 completed.
+    repeat: Starting run 5.
     <and so on>
 
 In the unlikely case that your command starts with an integer, you can
-disambiguate using a count of ``forever``: ``repeat forever python -c "print
-2+2"``.  (That of course also means that in the unlikely event that your
-command happens to start with ``forever``, you'll also need to use ``forever``
-to disambiguate: ``repeat forever forever ...``.)
+disambiguate using a count of ``forever``: ``repeat forever 999 ... ``.  This
+of course also means that in the equally unlikely event that your command
+happens to start with ``forever``, you'll *also* need to use ``forever`` to
+disambiguate: ``repeat forever forever ...``.
 
 To silence the progress output, use the `-q` option::
 
@@ -99,7 +99,7 @@ Installation
 Clone this repository, enter the top-level directory, and do a "python
 setup.py install" (or "python setup.py develop" if you prefer)::
 
-    git clone git@github.com:mdickinson/repeat.git
+    git clone git@github.com:mdickinson/repeat.git repeat
     cd repeat
     python setup.py develop
 

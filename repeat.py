@@ -45,9 +45,9 @@ def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
         )
 
     if count is None:
-        run_indices = itertools.count()
+        run_indices = itertools.count(1)
     else:
-        run_indices = six.moves.range(count)
+        run_indices = six.moves.range(1, count + 1)
 
     for index in run_indices:
         if verbose:
