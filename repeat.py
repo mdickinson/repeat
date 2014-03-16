@@ -1,8 +1,14 @@
+from __future__ import unicode_literals
+
 import argparse
 import itertools
 import subprocess
 import sys
 
+import six
+
+
+PREFIX = "repeat: "
 
 count_descriptions = {
     None: "forever",
@@ -12,27 +18,36 @@ count_descriptions = {
 count_description_default = "{count} times"
 
 
-def repeat(cmd, count=None, verbose=True, prefix="repeat: "):
+def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
     """
-    Run the given command (via subprocess) 'count' times.
+    Run the given command (via subprocess) *count* times.
 
     If *count* is None (the default), run indefinitely.
 
-    If *verbose* is true, output progress information.  Progress
-    information is prefixed with *prefix*.
+    If *verbose* is true, write progress information to *progress_stream*.
+    Each line of progress information is prefixed with *prefix*.
 
-    Halts as soon as cmd exits abnormally.
+    Halt as soon as *cmd* exits abnormally.
 
     """
+    if progress_stream is None:
+        progress_stream = sys.stdout
+
     if verbose:
         count_description = count_descriptions.get(
             count, count_description_default).format(count=count)
-        print "{}Repeating {} {}.".format(prefix, cmd, count_description)
+        progress_stream.write(
+            "{prefix}Repeating {cmd} {count}.\n".format(
+                prefix=prefix,
+                cmd=cmd,
+                count=count_description,
+            )
+        )
 
     if count is None:
         run_indices = itertools.count()
     else:
-        run_indices = xrange(count)
+        run_indices = six.moves.range(count)
 
     for index in run_indices:
         if verbose:
@@ -41,25 +56,46 @@ def repeat(cmd, count=None, verbose=True, prefix="repeat: "):
             else:
                 run_description = "{index} of {count}".format(
                     index=index, count=count)
-            print "{}Starting run {}.".format(prefix, run_description)
+            progress_stream.write(
+                "{prefix}Starting run {run}.\n".format(
+                    prefix=prefix,
+                    run=run_description,
+                )
+            )
 
         try:
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as exc:
             returncode = exc.returncode
             if verbose:
-                print "{}Run {} failed with returncode {}.".format(
-                    prefix, run_description, returncode)
+                progress_stream.write(
+                    "{prefix}Run {run} failed with "
+                    "returncode {returncode}.\n".format(
+                        prefix=prefix,
+                        run=run_description,
+                        returncode=returncode,
+                    )
+                )
             break
         else:
             if verbose:
-                print "{}Run {} completed.".format(prefix, run_description)
+                progress_stream.write(
+                    "{prefix}Run {run} completed.\n".format(
+                        prefix=prefix,
+                        run=run_description,
+                    )
+                )
     else:
         # All runs completed successfully.
         returncode = 0
 
     if verbose:
-        print "{}Exiting with returncode {}.".format(prefix, returncode)
+        progress_stream.write(
+            "{prefix}Exiting with returncode {returncode}.\n".format(
+                prefix=prefix,
+                returncode=returncode,
+            )
+        )
     return returncode
 
 
@@ -69,7 +105,7 @@ def parse_count(string):
     else:
         value = int(string)
         if value < 0:
-            raise ValueError("{} is negative".format(value))
+            raise ValueError("{value} is negative".format(value=value))
         return value
 
 
@@ -106,5 +142,10 @@ def main():
         count = None
         args.cmd.insert(0, args.count)
 
-    returncode = repeat(args.cmd, count=count, verbose=not args.quiet)
+    returncode = repeat(
+        cmd=args.cmd,
+        count=count,
+        verbose=not args.quiet,
+        progress_stream=sys.stdout,
+    )
     sys.exit(returncode)
