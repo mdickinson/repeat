@@ -70,7 +70,7 @@ def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
             if verbose:
                 progress_stream.write(
                     "{prefix}Run {run} failed with "
-                    "returncode {returncode}.\n".format(
+                    "return code {returncode}.\n".format(
                         prefix=prefix,
                         run=run_description,
                         returncode=returncode,
@@ -91,7 +91,7 @@ def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
 
     if verbose:
         progress_stream.write(
-            "{prefix}Exiting with returncode {returncode}.\n".format(
+            "{prefix}Exiting with return code {returncode}.\n".format(
                 prefix=prefix,
                 returncode=returncode,
             )
