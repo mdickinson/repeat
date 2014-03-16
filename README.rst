@@ -60,7 +60,7 @@ More simply, omit the count argument to repeat indefinitely::
     <and so on>
 
 In the unlikely case that your command starts with an integer, you can
-disambiguate using a count of ``forever``: ``repeat forever 999 ... ``.  This
+disambiguate using a count of ``forever``: ``repeat forever 999 ... `` .  This
 of course also means that in the equally unlikely event that your command
 happens to start with ``forever``, you'll *also* need to use ``forever`` to
 disambiguate: ``repeat forever forever ...``.
@@ -104,8 +104,8 @@ setup.py install" (or "python setup.py develop" if you prefer)::
     python setup.py develop
 
 **repeat** runs on Python 2 (version 2.6 or later) and on Python 3 (version 3.2
- or later).  It depends on the ``six`` package.  For Python 2.6, it also
- depends on the PyPI version of ``argparse``.
+or later).  It depends on the ``six`` package.  For Python 2.6, it also depends
+on the PyPI version of ``argparse``.
 
 
 License
