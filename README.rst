@@ -59,14 +59,14 @@ More simply, omit the count argument to repeat indefinitely::
     repeat: Starting run 5.
     <and so on>
 
-In the unlikely case that your command starts with an integer, you can
-disambiguate using a count of ``forever``::
+You can also explicitly request indefinite repetitions with a count of
+``forever``.  In the unlikely case that your command starts with an integer,
+you'll *need* to use ``forever`` to disambiguate::
 
     $ repeat forever 999 ...
 
 This of course also means that in the equally unlikely event that your command
-happens to start with ``forever``, you'll *also* need to use ``forever`` to
-disambiguate::
+happens to start with ``forever``, you'll *also* need to use ``forever``::
 
     $ repeat forever forever ....
 
