@@ -3,12 +3,13 @@ import sys
 from setuptools import setup
 
 
-# Required packages.  argparse was introduced into the standard library
-# in Python 2.7; mock was introduced in Python 3.3.
+# Required packages.  argparse was introduced into the standard library in
+# Python 2.7; mock was introduced in Python 3.3.  The tests use features from
+# unittest that first appeared in 2.7.
 required_packages = ["six"]
 if sys.version_info < (2, 7):
     required_packages.append("argparse")
-    required_packages.append("unittest")
+    required_packages.append("unittest2")
 if sys.version_info < (3, 3):
     required_packages.append("mock")
 
