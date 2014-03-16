@@ -69,8 +69,8 @@ class TestRepeat(unittest.TestCase):
         self.assertEqual(m.call_count, 2)
 
     def test_no_progress_output_when_verbose_is_false(self):
-        with mock.patch('repeat.subprocess.check_call') as m:
-            returncode = repeat.repeat(
+        with mock.patch('repeat.subprocess.check_call'):
+            repeat.repeat(
                 cmd=self.mock_cmd,
                 count=10,
                 verbose=False,
@@ -81,8 +81,8 @@ class TestRepeat(unittest.TestCase):
 
     def test_prefix_in_progress_output(self):
         prefix = 'test_prefix: '
-        with mock.patch('repeat.subprocess.check_call') as m:
-            returncode = repeat.repeat(
+        with mock.patch('repeat.subprocess.check_call'):
+            repeat.repeat(
                 cmd=self.mock_cmd,
                 count=10,
                 verbose=True,
@@ -97,8 +97,8 @@ class TestRepeat(unittest.TestCase):
             self.assertTrue(line.endswith('\n'))
 
     def test_reported_runs_in_progress_output(self):
-        with mock.patch('repeat.subprocess.check_call') as m:
-            returncode = repeat.repeat(
+        with mock.patch('repeat.subprocess.check_call'):
+            repeat.repeat(
                 cmd=self.mock_cmd,
                 count=10,
                 verbose=True,
@@ -130,7 +130,7 @@ class TestRepeat(unittest.TestCase):
     def test_reported_runs_in_infinite_case(self):
         with mock.patch('repeat.subprocess.check_call') as m:
             m.side_effect = MockCheckCall(returncodes=[0, 0, -23])
-            returncode = repeat.repeat(
+            repeat.repeat(
                 cmd=self.mock_cmd,
                 count=None,
                 verbose=True,
