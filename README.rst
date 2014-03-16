@@ -60,10 +60,15 @@ More simply, omit the count argument to repeat indefinitely::
     <and so on>
 
 In the unlikely case that your command starts with an integer, you can
-disambiguate using a count of ``forever``: ``repeat forever 999 ... `` .  This
-of course also means that in the equally unlikely event that your command
+disambiguate using a count of ``forever``::
+
+    $ repeat forever 999 ...
+
+This of course also means that in the equally unlikely event that your command
 happens to start with ``forever``, you'll *also* need to use ``forever`` to
-disambiguate: ``repeat forever forever ...``.
+disambiguate::
+
+    $ repeat forever forever ....
 
 To silence the progress output, use the `-q` option::
 
