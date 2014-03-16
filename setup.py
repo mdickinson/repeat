@@ -8,6 +8,7 @@ from setuptools import setup
 required_packages = ["six"]
 if sys.version_info < (2, 7):
     required_packages.append("argparse")
+    required_packages.append("unittest")
 if sys.version_info < (3, 3):
     required_packages.append("mock")
 

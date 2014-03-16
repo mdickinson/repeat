@@ -3,7 +3,11 @@ from __future__ import unicode_literals
 import io
 import subprocess
 import sys
-import unittest
+
+if sys.version_info >= (2, 7):
+    import unittest
+else:
+    import unittest2 as unittest
 
 if sys.version_info >= (3, 3):
     import unittest.mock as mock

@@ -103,3 +103,21 @@ setup.py install" (or "python setup.py develop" if you prefer)::
     cd repeat
     python setup.py develop
 
+**repeat** runs on Python 2 (version 2.6 or later) and on Python 3 (version 3.2
+ or later).  It depends on the ``six`` package.  For Python 2.6, it also
+ depends on the PyPI version of ``argparse``.
+
+
+License
+-------
+
+The **repeat** script is copyright (c) 2014 Mark Dickinson.
+
+**repeat** is licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.  You may
+obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations under the License.
