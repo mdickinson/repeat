@@ -79,7 +79,7 @@ Usage
 
 Type ``repeat --help`` to see options::
 
-    taniyama:Desktop mdickinson$ repeat --help
+    $ repeat --help
     usage: repeat [-h] [-q] count ...
 
     Repeat a command forever or a fixed number of times.
