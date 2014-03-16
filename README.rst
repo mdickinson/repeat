@@ -61,7 +61,8 @@ More simply, omit the count argument to repeat indefinitely::
 
 You can also explicitly request indefinite repetitions with a count of
 ``forever``.  In the unlikely case that your command starts with an integer,
-you'll *need* to use ``forever`` to disambiguate::
+you'll *need* to use ``forever`` to avoid the beginning of the command being
+interpreted as a count::
 
     $ repeat forever 999 ...
 
@@ -72,11 +73,10 @@ happens to start with ``forever``, you'll *also* need to use ``forever``::
 
 To silence the progress output, use the `-q` option::
 
-    $ repeat -q python -c "print 2+2"
+    $ repeat -q 3 python -c "print 2+2"
     4
     4
     4
-    <and so on>
 
 
 Usage
