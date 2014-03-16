@@ -1,20 +1,28 @@
 The repeat command
 ------------------
 
-'repeat' is a dirt simple Python script to repeat a command
+**repeat** is a dirt simple Python script to repeat a command
 indefinitely, or for a fixed number of iterations.  I wrote
-it because I got bored of writing::
+it because I got bored of writing (for example)::
 
-    for ($i = 0; $i -lt 100; $i++) do { stuff; }
+    $ for ($i = 0; $i -lt 100; $i++) { echo "Run $i"; do_stuff; echo "Run $i complete" }
 
-repeatedly in PowerShell, while trying to provoke threading-related
-race conditions in test code.  It also lets me write the same line
-on different platforms, without having to remember whether I'm in
-bash, PowerShell, or a regular Windows CMD prompt.
+repeatedly in PowerShell, while trying to provoke threading-related race
+conditions in test code.  What I *wanted* to write instead was something like::
+
+    $ repeat 100 do_stuff
+
+to repeat 100 times, or even just::
+
+    $ repeat do_stuff
+
+to repeat indefinitely.  **repeat** lets me do that.  It also lets me use the
+same command regardless of environment, freeing me from having to remember
+whether I'm in GNU Bash, PowerShell, or a regular Windows CMD prompt.
 
 Example usage::
 
-    taniyama:Desktop mdickinson$ repeat 3 python -c "print 2+2"
+    $ repeat 3 python -c "print 2+2"
     repeat: Repeating ['python', '-c', 'print 2+2'] 3 times.
     repeat: Starting run 0 of 3.
     4
@@ -28,13 +36,13 @@ Example usage::
     repeat: Exiting with returncode 0.
 
 The script will stop as soon as the command being executed exits with a nonzero
-return code, and will exit with that return code.  On successful completion it
-will exit with return code 0.  Some day I may add an option to continue on
-error, but I haven't needed that option yet.
+return code, and will itself exit with that same return code.  On successful
+completion it will exit with return code 0.  Some day I may add an option to
+continue on error, but I haven't needed that option yet.
 
 More simply, omit the count argument to repeat indefinitely::
 
-    taniyama:Desktop mdickinson$ repeat python -c "print 2+2"
+    $ repeat python -c "print 2+2"
     repeat: Repeating ['python', '-c', 'print 2+2'] forever.
     repeat: Starting run 0.
     4
@@ -59,10 +67,11 @@ to disambiguate: ``repeat forever forever ...``.)
 
 To silence the progress output, use the `-q` option::
 
-    taniyama:Desktop mdickinson$ repeat -q python -c "print 2+2"
+    $ repeat -q python -c "print 2+2"
     4
     4
     4
+    <and so on>
 
 
 Usage
