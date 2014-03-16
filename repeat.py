@@ -1,17 +1,34 @@
 import argparse
 import itertools
 import subprocess
+import sys
 
 
-def repeat(cmd, count=None, verbose=True):
+count_descriptions = {
+    None: "forever",
+    1: "once",
+    2: "twice",
+}
+count_description_default = "{count} times"
+
+
+def repeat(cmd, count=None, verbose=True, prefix="repeat: "):
     """
     Run the given command (via subprocess) 'count' times.
 
-    If count is None (the default), run indefinitely.
+    If *count* is None (the default), run indefinitely.
+
+    If *verbose* is true, output progress information.  Progress
+    information is prefixed with *prefix*.
 
     Halts as soon as cmd exits abnormally.
 
     """
+    if verbose:
+        count_description = count_descriptions.get(
+            count, count_description_default).format(count=count)
+        print "{}Repeating {} {}.".format(prefix, cmd, count_description)
+
     if count is None:
         run_indices = itertools.count()
     else:
@@ -19,10 +36,31 @@ def repeat(cmd, count=None, verbose=True):
 
     for index in run_indices:
         if verbose:
-            print "Starting run {}.".format(index)
-        subprocess.check_call(cmd)
-        if verbose:
-            print "Run {} completed.".format(index)
+            if count is None:
+                run_description = "{index}".format(index=index)
+            else:
+                run_description = "{index} of {count}".format(
+                    index=index, count=count)
+            print "{}Starting run {}.".format(prefix, run_description)
+
+        try:
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as exc:
+            returncode = exc.returncode
+            if verbose:
+                print "{}Run {} failed with returncode {}.".format(
+                    prefix, run_description, returncode)
+            break
+        else:
+            if verbose:
+                print "{}Run {} completed.".format(prefix, run_description)
+    else:
+        # All runs completed successfully.
+        returncode = 0
+
+    if verbose:
+        print "{}Exiting with returncode {}.".format(prefix, returncode)
+    return returncode
 
 
 def parse_count(string):
@@ -68,4 +106,5 @@ def main():
         count = None
         args.cmd.insert(0, args.count)
 
-    repeat(args.cmd, count=count, verbose=not args.quiet)
+    returncode = repeat(args.cmd, count=count, verbose=not args.quiet)
+    sys.exit(returncode)
