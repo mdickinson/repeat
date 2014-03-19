@@ -18,7 +18,12 @@ count_descriptions = {
 count_description_default = "{count} times"
 
 
-def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
+def stop_on(target_returncode):
+    return lambda job_returncode: job_returncode == target_returncode
+
+
+def repeat(cmd, count=None, stop_criterion=None,
+           verbose=True, progress_stream=None, prefix=PREFIX):
     """
     Run the given command (via subprocess) *count* times.
 
@@ -27,9 +32,16 @@ def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
     If *verbose* is true, write progress information to *progress_stream*.
     Each line of progress information is prefixed with *prefix*.
 
-    Halt as soon as *cmd* exits abnormally.
+    The *stop_criterion* argument allows stopping on an arbitrary
+    function of the process returncode.  If not None, it should be a
+    callable accepting a returncode and returning a boolean result.
+    The default behaviour is to halt as soon as *cmd* exits with a
+    nonzero returncode.
 
     """
+    if stop_criterion is None:
+        stop_criterion = lambda returncode: returncode != 0
+
     if progress_stream is None:
         progress_stream = sys.stdout
 
@@ -63,40 +75,43 @@ def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
                 )
             )
 
-        try:
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as exc:
-            returncode = exc.returncode
-            if verbose:
+        run_returncode = subprocess.call(cmd)
+
+        if verbose:
+            if run_returncode:
                 progress_stream.write(
                     "{prefix}Run {run} failed with "
                     "return code {returncode}.\n".format(
                         prefix=prefix,
                         run=run_description,
-                        returncode=returncode,
+                        returncode=run_returncode,
                     )
                 )
-            break
-        else:
-            if verbose:
+            else:
                 progress_stream.write(
                     "{prefix}Run {run} completed.\n".format(
                         prefix=prefix,
                         run=run_description,
                     )
                 )
+
+        if stop_criterion(run_returncode):
+            # On exit, use the returncode that caused us to exit.
+            repeat_returncode = run_returncode
+            break
+
     else:
         # All runs completed successfully.
-        returncode = 0
+        repeat_returncode = 0
 
     if verbose:
         progress_stream.write(
             "{prefix}Exiting with return code {returncode}.\n".format(
                 prefix=prefix,
-                returncode=returncode,
+                returncode=repeat_returncode,
             )
         )
-    return returncode
+    return repeat_returncode
 
 
 def parse_count(string):

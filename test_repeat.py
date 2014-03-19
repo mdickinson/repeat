@@ -165,3 +165,15 @@ class TestRepeat(unittest.TestCase):
 
         expected_failure_line = 'Run 3 failed with return code -23.\n'
         self.assertIn(expected_failure_line, output)
+
+    def test_stop_on_particular_error_code(self):
+        with mock.patch('repeat.subprocess.check_call') as m:
+            m.side_effect = MockCheckCall(returncodes=[0, 0, -23, 0, 4, 0, 3, 2])
+            returncode = repeat.repeat(
+                cmd=self.mock_cmd,
+                count=None,
+                stop_criterion=repeat.stop_on(4),
+                progress_stream=self.mock_stdout,
+            )
+        self.assertEqual(returncode, 4)
+        self.assertEqual(m.call_count, 5)
