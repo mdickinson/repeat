@@ -18,11 +18,15 @@ count_descriptions = {
 count_description_default = "{count} times"
 
 
-def stop_on(target_returncode):
-    return lambda job_returncode: job_returncode == target_returncode
+def nonzero_returncode(returncode):
+    return returncode != 0
 
 
-def repeat(cmd, count=None, stop_criterion=None,
+def matches_returncode(target_returncode):
+    return lambda returncode: returncode == target_returncode
+
+
+def repeat(cmd, count=None, stop_criterion=nonzero_returncode,
            verbose=True, progress_stream=None, prefix=PREFIX):
     """
     Run the given command (via subprocess) *count* times.
@@ -39,9 +43,6 @@ def repeat(cmd, count=None, stop_criterion=None,
     nonzero returncode.
 
     """
-    if stop_criterion is None:
-        stop_criterion = lambda returncode: returncode != 0
-
     if progress_stream is None:
         progress_stream = sys.stdout
 
@@ -146,6 +147,11 @@ def main():
         nargs=argparse.REMAINDER,
         help="command to execute",
     )
+    parser.add_argument(
+        "-s", "--stop-on",
+        type=int,
+        help="halt on the given return code",
+    )
 
     args = parser.parse_args()
 
@@ -157,10 +163,16 @@ def main():
         count = None
         args.cmd.insert(0, args.count)
 
+    if 'stop_on' in args:
+        stop_criterion = stop_on_returncode(args['stop_on'])
+    else:
+        stop_criterion = nonzero_returncode
+
     returncode = repeat(
         cmd=args.cmd,
         count=count,
         verbose=not args.quiet,
         progress_stream=sys.stdout,
+        stop_criterion=stop_criterion,
     )
     sys.exit(returncode)
