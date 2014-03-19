@@ -133,24 +133,24 @@ def main():
         prog="repeat",
     )
     parser.add_argument(
-        "count",
-        help="number of iterations, or 'forever'",
-    )
-    parser.add_argument(
         "-q", "--quiet",
         action='store_true',
         default=False,
         help="suppress progress output",
     )
     parser.add_argument(
-        "cmd",
-        nargs=argparse.REMAINDER,
-        help="command to execute",
-    )
-    parser.add_argument(
         "-s", "--stop-on",
         type=int,
         help="halt on the given return code",
+    )
+    parser.add_argument(
+        "count",
+        help="number of iterations, or 'forever'",
+    )
+    parser.add_argument(
+        "cmd",
+        nargs=argparse.REMAINDER,
+        help="command to execute",
     )
 
     args = parser.parse_args()
@@ -163,8 +163,8 @@ def main():
         count = None
         args.cmd.insert(0, args.count)
 
-    if 'stop_on' in args:
-        stop_criterion = stop_on_returncode(args['stop_on'])
+    if args.stop_on is not None:
+        stop_criterion = matches_returncode(args.stop_on)
     else:
         stop_criterion = nonzero_returncode
 
