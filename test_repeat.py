@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import io
+import itertools
 import subprocess
 import sys
 
@@ -20,18 +21,11 @@ import repeat
 
 
 class MockCheckCall(object):
-    def __init__(self, returncodes):
-        self.returncodes = iter(returncodes)
+    def __init__(self, returncodes=[]):
+        self.returncodes = itertools.chain(returncodes, itertools.repeat(0))
 
     def __call__(self, cmd):
-        returncode = next(self.returncodes)
-        if returncode == 0:
-            return 0
-        else:
-            raise subprocess.CalledProcessError(
-                returncode=returncode,
-                cmd=cmd,
-            )
+        return next(self.returncodes)
 
 
 class TestRepeat(unittest.TestCase):
@@ -47,7 +41,8 @@ class TestRepeat(unittest.TestCase):
         pass
 
     def test_repeat_ten_times(self):
-        with mock.patch('repeat.subprocess.check_call') as m:
+        with mock.patch('repeat.subprocess.call') as m:
+            m.side_effect = MockCheckCall()
             returncode = repeat.repeat(
                 self.mock_cmd, count=10, progress_stream=self.mock_stdout)
         self.assertEqual(returncode, 0)
@@ -58,22 +53,22 @@ class TestRepeat(unittest.TestCase):
             self.assertFalse(kwargs)
 
     def test_repeat_zero_times(self):
-        with mock.patch('repeat.subprocess.check_call') as m:
+        with mock.patch('repeat.subprocess.call') as m:
             returncode = repeat.repeat(
                 self.mock_cmd, count=0, progress_stream=self.mock_stdout)
         self.assertEqual(returncode, 0)
         self.assertFalse(m.called)
 
     def test_abort_on_failure(self):
-        with mock.patch('repeat.subprocess.check_call') as m:
+        with mock.patch('repeat.subprocess.call') as m:
             m.side_effect = MockCheckCall(returncodes=[0, 7])
             returncode = repeat.repeat(
                 self.mock_cmd, count=10, progress_stream=self.mock_stdout)
-        self.assertEqual(returncode, 7)
+        self.assertEqual(returncode, 1)
         self.assertEqual(m.call_count, 2)
 
     def test_no_progress_output_when_verbose_is_false(self):
-        with mock.patch('repeat.subprocess.check_call'):
+        with mock.patch('repeat.subprocess.call'):
             repeat.repeat(
                 cmd=self.mock_cmd,
                 count=10,
@@ -85,7 +80,8 @@ class TestRepeat(unittest.TestCase):
 
     def test_prefix_in_progress_output(self):
         prefix = 'test_prefix: '
-        with mock.patch('repeat.subprocess.check_call'):
+        with mock.patch('repeat.subprocess.call') as m:
+            m.side_effect = MockCheckCall()
             repeat.repeat(
                 cmd=self.mock_cmd,
                 count=10,
@@ -101,7 +97,8 @@ class TestRepeat(unittest.TestCase):
             self.assertTrue(line.endswith('\n'))
 
     def test_reported_runs_in_progress_output(self):
-        with mock.patch('repeat.subprocess.check_call'):
+        with mock.patch('repeat.subprocess.call') as m:
+            m.side_effect = MockCheckCall()
             repeat.repeat(
                 cmd=self.mock_cmd,
                 count=10,
@@ -132,7 +129,7 @@ class TestRepeat(unittest.TestCase):
         self.assertEqual(actual_end_lines, expected_end_lines)
 
     def test_reported_runs_in_infinite_case(self):
-        with mock.patch('repeat.subprocess.check_call') as m:
+        with mock.patch('repeat.subprocess.call') as m:
             m.side_effect = MockCheckCall(returncodes=[0, 0, -23])
             repeat.repeat(
                 cmd=self.mock_cmd,

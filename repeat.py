@@ -63,28 +63,30 @@ def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
                 )
             )
 
-        try:
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as exc:
-            returncode = exc.returncode
-            if verbose:
-                progress_stream.write(
-                    "{prefix}Run {run} failed with "
-                    "return code {returncode}.\n".format(
-                        prefix=prefix,
-                        run=run_description,
-                        returncode=returncode,
-                    )
-                )
-            break
-        else:
-            if verbose:
+        run_returncode = subprocess.call(cmd)
+
+        if verbose:
+            if run_returncode == 0:
                 progress_stream.write(
                     "{prefix}Run {run} completed.\n".format(
                         prefix=prefix,
                         run=run_description,
                     )
                 )
+            else:
+                progress_stream.write(
+                    "{prefix}Run {run} failed with "
+                    "return code {returncode}.\n".format(
+                        prefix=prefix,
+                        run=run_description,
+                        returncode=run_returncode,
+                    )
+                )
+
+        if run_returncode != 0:
+            returncode = 1
+            break
+
     else:
         # All runs completed successfully.
         returncode = 0
