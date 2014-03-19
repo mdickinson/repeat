@@ -4,6 +4,7 @@ import io
 import itertools
 import subprocess
 import sys
+import textwrap
 
 if sys.version_info >= (2, 7):
     import unittest
@@ -101,32 +102,21 @@ class TestRepeat(unittest.TestCase):
             m.side_effect = MockCheckCall()
             repeat.repeat(
                 cmd=self.mock_cmd,
-                count=10,
+                count=3,
                 verbose=True,
                 progress_stream=self.mock_stdout,
-                prefix='',
+                prefix='testing:',
             )
-        output = self.mock_stdout.getvalue().splitlines(True)
-
-        expected_start_lines = [
-            'Starting run {run} of 10.\n'.format(run=run)
-            for run in six.moves.range(1, 11)
-        ]
-        actual_start_lines = [
-            line for line in output
-            if line.startswith('Starting')
-        ]
-        self.assertEqual(actual_start_lines, expected_start_lines)
-
-        expected_end_lines = [
-            'Run {run} of 10 completed.\n'.format(run=run)
-            for run in six.moves.range(1, 11)
-        ]
-        actual_end_lines = [
-            line for line in output
-            if 'completed' in line
-        ]
-        self.assertEqual(actual_end_lines, expected_end_lines)
+        full_output = self.mock_stdout.getvalue()
+        expected_run_reporting = textwrap.dedent("""\
+            testing:Starting run 1 of 3.
+            testing:Run 1 of 3 completed.
+            testing:Starting run 2 of 3.
+            testing:Run 2 of 3 completed.
+            testing:Starting run 3 of 3.
+            testing:Run 3 of 3 completed.
+        """)
+        self.assertIn(expected_run_reporting, full_output)
 
     def test_reported_runs_in_infinite_case(self):
         with mock.patch('repeat.subprocess.call') as m:
@@ -136,29 +126,15 @@ class TestRepeat(unittest.TestCase):
                 count=None,
                 verbose=True,
                 progress_stream=self.mock_stdout,
-                prefix='',
+                prefix='infinite testing> ',
             )
-        output = self.mock_stdout.getvalue().splitlines(True)
-
-        expected_start_lines = [
-            'Starting run {run}.\n'.format(run=run)
-            for run in six.moves.range(1, 4)
-        ]
-        actual_start_lines = [
-            line for line in output
-            if line.startswith('Starting')
-        ]
-        self.assertEqual(actual_start_lines, expected_start_lines)
-
-        expected_end_lines = [
-            'Run {run} completed.\n'.format(run=run)
-            for run in six.moves.range(1, 3)
-        ]
-        actual_end_lines = [
-            line for line in output
-            if 'completed' in line
-        ]
-        self.assertEqual(actual_end_lines, expected_end_lines)
-
-        expected_failure_line = 'Run 3 failed with return code -23.\n'
-        self.assertIn(expected_failure_line, output)
+        full_output = self.mock_stdout.getvalue()
+        expected_run_reporting = textwrap.dedent("""\
+            infinite testing> Starting run 1.
+            infinite testing> Run 1 completed.
+            infinite testing> Starting run 2.
+            infinite testing> Run 2 completed.
+            infinite testing> Starting run 3.
+            infinite testing> Run 3 failed with return code -23.
+        """)
+        self.assertIn(expected_run_reporting, full_output)

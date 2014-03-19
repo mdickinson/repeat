@@ -10,6 +10,10 @@ import six
 
 PREFIX = "repeat: "
 
+# Templates for output on failure and success.
+FAILED = "{prefix}Run {run} failed with return code {returncode}.\n"
+PASSED = "{prefix}Run {run} completed.\n"
+
 count_descriptions = {
     None: "forever",
     1: "once",
@@ -66,22 +70,14 @@ def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
         run_returncode = subprocess.call(cmd)
 
         if verbose:
-            if run_returncode == 0:
-                progress_stream.write(
-                    "{prefix}Run {run} completed.\n".format(
-                        prefix=prefix,
-                        run=run_description,
-                    )
+            completion_message = FAILED if run_returncode != 0 else PASSED
+            progress_stream.write(
+                completion_message.format(
+                    prefix=prefix,
+                    run=run_description,
+                    returncode=run_returncode,
                 )
-            else:
-                progress_stream.write(
-                    "{prefix}Run {run} failed with "
-                    "return code {returncode}.\n".format(
-                        prefix=prefix,
-                        run=run_description,
-                        returncode=run_returncode,
-                    )
-                )
+            )
 
         if run_returncode != 0:
             returncode = 1
