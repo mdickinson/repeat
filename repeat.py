@@ -22,7 +22,8 @@ count_descriptions = {
 count_description_default = "{count} times"
 
 
-def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
+def repeat(cmd, count=None, verbose=True,
+           progress_stream=sys.stdout, prefix=PREFIX):
     """
     Run the given command (via subprocess) *count* times.
 
@@ -34,9 +35,6 @@ def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
     Halt as soon as *cmd* exits abnormally.
 
     """
-    if progress_stream is None:
-        progress_stream = sys.stdout
-
     if verbose:
         count_description = count_descriptions.get(
             count, count_description_default).format(count=count)
