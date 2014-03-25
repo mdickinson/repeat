@@ -10,6 +10,10 @@ import six
 
 PREFIX = "repeat: "
 
+# Templates for output on failure and success.
+FAILED = "{prefix}Run {run} failed with return code {returncode}.\n"
+PASSED = "{prefix}Run {run} completed.\n"
+
 count_descriptions = {
     None: "forever",
     1: "once",
@@ -18,7 +22,8 @@ count_descriptions = {
 count_description_default = "{count} times"
 
 
-def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
+def repeat(cmd, count=None, verbose=True,
+           progress_stream=sys.stdout, prefix=PREFIX):
     """
     Run the given command (via subprocess) *count* times.
 
@@ -30,9 +35,6 @@ def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
     Halt as soon as *cmd* exits abnormally.
 
     """
-    if progress_stream is None:
-        progress_stream = sys.stdout
-
     if verbose:
         count_description = count_descriptions.get(
             count, count_description_default).format(count=count)
@@ -63,28 +65,22 @@ def repeat(cmd, count=None, verbose=True, progress_stream=None, prefix=PREFIX):
                 )
             )
 
-        try:
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as exc:
-            returncode = exc.returncode
-            if verbose:
-                progress_stream.write(
-                    "{prefix}Run {run} failed with "
-                    "return code {returncode}.\n".format(
-                        prefix=prefix,
-                        run=run_description,
-                        returncode=returncode,
-                    )
+        run_returncode = subprocess.call(cmd)
+
+        if verbose:
+            completion_message = FAILED if run_returncode != 0 else PASSED
+            progress_stream.write(
+                completion_message.format(
+                    prefix=prefix,
+                    run=run_description,
+                    returncode=run_returncode,
                 )
+            )
+
+        if run_returncode != 0:
+            returncode = 1
             break
-        else:
-            if verbose:
-                progress_stream.write(
-                    "{prefix}Run {run} completed.\n".format(
-                        prefix=prefix,
-                        run=run_description,
-                    )
-                )
+
     else:
         # All runs completed successfully.
         returncode = 0
