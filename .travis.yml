@@ -1,13 +1,17 @@
 language: python
 python:
+  - 2.6
   - 2.7
   - 3.2
   - 3.3
 install:
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install unittest2; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
   - pip install six
   - python setup.py develop
 script:
-  - python -m unittest discover -v
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then unit2 discover -v; fi
+  - if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; then python -m unittest discover -v; fi
 notifications:
   email:
     - dickinsm@gmail.com
