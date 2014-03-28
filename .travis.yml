@@ -4,6 +4,8 @@ python:
   - 3.2
   - 3.3
 install:
+  - pip install six
+  - pip install mock
   - python setup.py develop
 script:
   - python -m unittest discover -v
