@@ -1,3 +1,7 @@
+.. image:: https://travis-ci.org/mdickinson/repeat.svg?branch=master
+   :target: https://travis-ci.org/mdickinson/repeat
+
+
 The repeat command
 ------------------
 
