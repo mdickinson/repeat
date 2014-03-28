@@ -1,4 +1,5 @@
 .. image:: https://travis-ci.org/mdickinson/repeat.svg?branch=master
+   :alt: Status of most recent Travis CI run
    :target: https://travis-ci.org/mdickinson/repeat
 
 
