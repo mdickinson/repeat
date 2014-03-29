@@ -6,17 +6,10 @@ python:
   - 3.3
 install:
   - pip install six
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then
-      pip install unittest2
-      pip install argparse
-    fi
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install unittest2; pip install argparse; fi
   - python setup.py develop
 script:
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then
-      unit2 discover -v
-    else
-      python -m unittest discover -v
-    fi
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then unit2 discover -v; else python -m unittest discover -v; fi
 notifications:
   email:
     - dickinsm@gmail.com
