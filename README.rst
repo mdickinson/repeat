@@ -42,8 +42,21 @@ Example usage::
 
 The script will stop as soon as the command being executed exits with a nonzero
 return code, and will itself exit with that same return code.  On successful
-completion it will exit with return code 0.  Some day I may add an option to
-continue on error, but I haven't needed that option yet.
+completion it will exit with return code 0. To keep going even if some of the
+iterations of the command fail, use the ``-k`` option::
+
+    $ repeat -k 3 python -c "import sys; sys.exit(1)"
+    repeat: Repeating ['python', '-c', 'import sys; sys.exit(1)'] 3 times.
+    repeat: Starting run 1 of 3.
+    repeat: Run 1 of 3 failed with return code 1.
+    repeat: # of successes: 0, # of failures: 1 (100.00%).
+    repeat: Starting run 2 of 3.
+    repeat: Run 2 of 3 failed with return code 1.
+    repeat: # of successes: 0, # of failures: 2 (100.00%).
+    repeat: Starting run 3 of 3.
+    repeat: Run 3 of 3 failed with return code 1.
+    repeat: # of successes: 0, # of failures: 3 (100.00%).
+    repeat: Exiting with return code 1.
 
 More simply, omit the count argument to repeat indefinitely::
 
