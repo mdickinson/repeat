@@ -77,6 +77,14 @@ class TestRepeat(unittest.TestCase):
         self.assertEqual(returncode, 1)
         self.assertEqual(self.mock_subprocess_call.call_count, 2)
 
+    def test_keep_going(self):
+        self.mock_subprocess_call.returncodes = iter([0, 1, 0])
+        returncode = repeat.repeat(
+            self.mock_cmd, count=3, keep_going=True,
+            progress_stream=self.mock_stdout)
+        self.assertEqual(returncode, 1)
+        self.assertEqual(self.mock_subprocess_call.call_count, 3)
+
     def test_no_progress_output_when_verbose_is_false(self):
         returncode = repeat.repeat(
             cmd=self.mock_cmd,

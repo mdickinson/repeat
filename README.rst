@@ -99,8 +99,9 @@ Type ``repeat --help`` to see options::
       cmd          command to execute
 
     optional arguments:
-      -h, --help   show this help message and exit
-      -q, --quiet  suppress progress output
+      -h, --help        show this help message and exit
+      -q, --quiet       suppress progress output
+      -k, --keep-going  keep running even if some iterations fail
 
 
 Installation
