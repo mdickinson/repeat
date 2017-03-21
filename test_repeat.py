@@ -151,3 +151,27 @@ class TestRepeat(unittest.TestCase):
             infinite testing> Run 3 failed with return code -23.
         """)
         self.assertIn(expected_run_reporting, full_output)
+
+    def test_n_success_failure_in_output(self):
+        self.mock_subprocess_call.returncodes = iter([0, -9, 0])
+        repeat.repeat(
+            cmd=self.mock_cmd,
+            count=3,
+            verbose=True,
+            keep_going=True,
+            progress_stream=self.mock_stdout,
+            prefix='keep going> ',
+        )
+        full_output = self.mock_stdout.getvalue()
+        expected_run_reporting = textwrap.dedent("""\
+            keep going> Starting run 1 of 3.
+            keep going> Run 1 of 3 completed.
+            keep going> # of successes: 1, # of failures: 0 (0.00%).
+            keep going> Starting run 2 of 3.
+            keep going> Run 2 of 3 failed with return code -9.
+            keep going> # of successes: 1, # of failures: 1 (50.00%).
+            keep going> Starting run 3 of 3.
+            keep going> Run 3 of 3 completed.
+            keep going> # of successes: 2, # of failures: 1 (33.33%).
+        """)
+        self.assertIn(expected_run_reporting, full_output)

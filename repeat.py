@@ -14,6 +14,10 @@ PREFIX = "repeat: "
 FAILED = "{prefix}Run {run} failed with return code {returncode}.\n"
 PASSED = "{prefix}Run {run} completed.\n"
 
+# Template for reporting no. of successes/failures when keep_going is true.
+PROGRESS = ("{prefix}# of successes: {n_success}, "
+            "# of failures: {n_failure} ({pct_failure:.2f}%).\n")
+
 count_descriptions = {
     None: "forever",
     1: "once",
@@ -53,6 +57,7 @@ def repeat(cmd, count=None, verbose=True, keep_going=False,
     else:
         run_indices = six.moves.range(1, count + 1)
 
+    n_success = n_failure = 0
     returncode = 0
     for index in run_indices:
         if verbose:
@@ -82,8 +87,21 @@ def repeat(cmd, count=None, verbose=True, keep_going=False,
 
         if run_returncode != 0:
             returncode = 1
+            n_failure += 1
             if not keep_going:
                 break
+        else:
+            n_success += 1
+
+        if verbose and keep_going:
+            progress_stream.write(
+                PROGRESS.format(
+                    prefix=prefix,
+                    n_success=n_success,
+                    n_failure=n_failure,
+                    pct_failure=100.0*n_failure/(n_failure+n_success),
+                )
+            )
 
     if verbose:
         progress_stream.write(
