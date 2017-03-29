@@ -14,6 +14,10 @@ PREFIX = "repeat: "
 FAILED = "{prefix}Run {run} failed with return code {returncode}.\n"
 PASSED = "{prefix}Run {run} completed.\n"
 
+# Template for reporting no. of successes/failures when keep_going is true.
+PROGRESS = ("{prefix}# of successes: {n_success}, "
+            "# of failures: {n_failure} ({pct_failure:.2f}%).\n")
+
 count_descriptions = {
     None: "forever",
     1: "once",
@@ -22,7 +26,7 @@ count_descriptions = {
 count_description_default = "{count} times"
 
 
-def repeat(cmd, count=None, verbose=True,
+def repeat(cmd, count=None, verbose=True, keep_going=False,
            progress_stream=sys.stdout, prefix=PREFIX):
     """
     Run the given command (via subprocess) *count* times.
@@ -32,7 +36,9 @@ def repeat(cmd, count=None, verbose=True,
     If *verbose* is true, write progress information to *progress_stream*.
     Each line of progress information is prefixed with *prefix*.
 
-    Halt as soon as *cmd* exits abnormally.
+    Halt as soon as *cmd* exits abnormally if *keep_going* is false (the
+    default). If *keep_going* is true, keep running until the desired number
+    of iterations has been met.
 
     """
     if verbose:
@@ -51,6 +57,8 @@ def repeat(cmd, count=None, verbose=True,
     else:
         run_indices = six.moves.range(1, count + 1)
 
+    n_success = n_failure = 0
+    returncode = 0
     for index in run_indices:
         if verbose:
             if count is None:
@@ -79,11 +87,21 @@ def repeat(cmd, count=None, verbose=True,
 
         if run_returncode != 0:
             returncode = 1
-            break
+            n_failure += 1
+            if not keep_going:
+                break
+        else:
+            n_success += 1
 
-    else:
-        # All runs completed successfully.
-        returncode = 0
+        if verbose and keep_going:
+            progress_stream.write(
+                PROGRESS.format(
+                    prefix=prefix,
+                    n_success=n_success,
+                    n_failure=n_failure,
+                    pct_failure=100.0*n_failure/(n_failure+n_success),
+                )
+            )
 
     if verbose:
         progress_stream.write(
@@ -123,6 +141,12 @@ def main():
         help="suppress progress output",
     )
     parser.add_argument(
+        "-k", "--keep-going",
+        action='store_true',
+        default=False,
+        help="keep running even if some iterations fail",
+    )
+    parser.add_argument(
         "cmd",
         nargs=argparse.REMAINDER,
         help="command to execute",
@@ -142,6 +166,7 @@ def main():
         cmd=args.cmd,
         count=count,
         verbose=not args.quiet,
+        keep_going=args.keep_going,
         progress_stream=sys.stdout,
     )
     sys.exit(returncode)
